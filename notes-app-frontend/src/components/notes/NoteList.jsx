@@ -1,8 +1,6 @@
 import React from 'react';
 import { format } from 'date-fns';
 import { Edit2, Trash2, FileText } from 'lucide-react';
-import notesService from '../../services/notes';
-import toast from 'react-hot-toast';
 
 const NoteSkeleton = () => (
   <div className="bg-white overflow-hidden shadow rounded-lg border border-gray-200 animate-pulse">
@@ -26,15 +24,10 @@ const NoteSkeleton = () => (
   </div>
 );
 
-const NoteList = ({ notes, isLoading = false, onEdit, onDeleteSuccess }) => {
+const NoteList = ({ notes, isLoading = false, onEdit, onDelete }) => {
   const handleDelete = async (id) => {
     if (window.confirm('Are you sure you want to delete this note?')) {
-      try {
-        await notesService.delete(id);
-        onDeleteSuccess();
-      } catch (error) {
-        toast.error('Failed to delete note');
-      }
+      onDelete(id);
     }
   };
 

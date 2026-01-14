@@ -3,7 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import NoteList from '../components/notes/NoteList';
 import NoteForm from '../components/notes/NoteForm';
 import { Plus, LogOut, Building2 } from 'lucide-react';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import notesService from '../services/notes';
 import toast from 'react-hot-toast';
 
@@ -11,12 +11,120 @@ const Dashboard = () => {
   const { user, logout } = useAuth();
   const [showNoteForm, setShowNoteForm] = useState(false);
   const [editingNote, setEditingNote] = useState(null);
+  const queryClient = useQueryClient();
 
   const { data: notes, isLoading, error, refetch } = useQuery({
     queryKey: ['notes'],
     queryFn: () => notesService.getAll().then(res => res.data),
     retry: 1,
     refetchOnWindowFocus: false
+  });
+
+  // Mutation for creating a note
+  const createNoteMutation = useMutation({
+    mutationFn: notesService.create,
+    onMutate: async (newNoteData) => {
+      // Cancel any outgoing refetches
+      await queryClient.cancelQueries({ queryKey: ['notes'] });
+
+      // Snapshot the previous value
+      const previousNotes = queryClient.getQueryData(['notes']);
+
+      // Optimistically update to the new value
+      const optimisticNote = {
+        ...newNoteData,
+        id: Date.now(), // Temporary ID
+        user_id: user?.id,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      };
+      queryClient.setQueryData(['notes'], (oldNotes) => [optimisticNote, ...(oldNotes || [])]);
+
+      // Return a context object with the snapshotted value
+      return { previousNotes };
+    },
+    onError: (err, newNoteData, context) => {
+      // If the mutation fails, use the context returned from onMutate to roll back
+      if (context?.previousNotes) {
+        queryClient.setQueryData(['notes'], context.previousNotes);
+      }
+      toast.error('Failed to create note');
+    },
+    onSuccess: (response) => {
+      // Replace the optimistic note with the real one
+      queryClient.setQueryData(['notes'], (oldNotes) =>
+        oldNotes?.map(note => note.id === response.data.id ? response.data : note) || []
+      );
+      toast.success('Note created!');
+    }
+  });
+
+  // Mutation for updating a note
+  const updateNoteMutation = useMutation({
+    mutationFn: ({ id, data }) => notesService.update(id, data),
+    onMutate: async ({ id, data }) => {
+      // Cancel any outgoing refetches
+      await queryClient.cancelQueries({ queryKey: ['notes'] });
+
+      // Snapshot the previous value
+      const previousNotes = queryClient.getQueryData(['notes']);
+
+      // Optimistically update to the new value
+      queryClient.setQueryData(['notes'], (oldNotes) =>
+        oldNotes?.map(note =>
+          note.id === id
+            ? { ...note, ...data, updated_at: new Date().toISOString() }
+            : note
+        ) || []
+      );
+
+      // Return a context object with the snapshotted value
+      return { previousNotes };
+    },
+    onError: (err, variables, context) => {
+      // If the mutation fails, use the context returned from onMutate to roll back
+      if (context?.previousNotes) {
+        queryClient.setQueryData(['notes'], context.previousNotes);
+      }
+      toast.error('Failed to update note');
+    },
+    onSuccess: (response, { id }) => {
+      // Update with the real data from server
+      queryClient.setQueryData(['notes'], (oldNotes) =>
+        oldNotes?.map(note => note.id === id ? response.data : note) || []
+      );
+      toast.success('Note updated!');
+    }
+  });
+
+  // Mutation for deleting a note
+  const deleteNoteMutation = useMutation({
+    mutationFn: notesService.delete,
+    onMutate: async (deletedId) => {
+      // Cancel any outgoing refetches
+      await queryClient.cancelQueries({ queryKey: ['notes'] });
+
+      // Snapshot the previous value
+      const previousNotes = queryClient.getQueryData(['notes']);
+
+      // Optimistically remove the note
+      queryClient.setQueryData(['notes'], (oldNotes) =>
+        oldNotes?.filter(note => note.id !== deletedId) || []
+      );
+
+      // Return a context object with the snapshotted value
+      return { previousNotes };
+    },
+    onError: (err, deletedId, context) => {
+      // If the mutation fails, use the context returned from onMutate to roll back
+      if (context?.previousNotes) {
+        queryClient.setQueryData(['notes'], context.previousNotes);
+      }
+      toast.error('Failed to delete note');
+    },
+    onSuccess: () => {
+      toast.success('Note deleted!');
+    }
   });
 
   const handleEditNote = (note) => {
@@ -29,10 +137,13 @@ const Dashboard = () => {
     setEditingNote(null);
   };
 
-  const handleNoteFormSuccess = () => {
-    refetch();
+  const handleNoteFormSuccess = (noteData) => {
+    if (editingNote) {
+      updateNoteMutation.mutate({ id: editingNote.id, data: noteData });
+    } else {
+      createNoteMutation.mutate(noteData);
+    }
     handleNoteFormClose();
-    toast.success(editingNote ? 'Note updated!' : 'Note created!');
   };
 
   const handleLogout = () => {
@@ -119,10 +230,7 @@ const Dashboard = () => {
               notes={notes || []}
               isLoading={isLoading}
               onEdit={handleEditNote}
-              onDeleteSuccess={() => {
-                refetch();
-                toast.success('Note deleted!');
-              }}
+              onDelete={(id) => deleteNoteMutation.mutate(id)}
             />
           )}
         </div>

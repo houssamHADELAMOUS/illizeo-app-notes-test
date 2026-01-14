@@ -2,7 +2,6 @@ import React from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { X } from 'lucide-react';
-import notesService from '../../services/notes';
 import toast from 'react-hot-toast';
 
 const NoteForm = ({ note, onClose, onSuccess }) => {
@@ -27,12 +26,7 @@ const NoteForm = ({ note, onClose, onSuccess }) => {
     }),
     onSubmit: async (values, { setSubmitting }) => {
       try {
-        if (isEditing) {
-          await notesService.update(note.id, values);
-        } else {
-          await notesService.create(values);
-        }
-        onSuccess();
+        onSuccess(values);
       } catch (error) {
         toast.error(`Failed to ${isEditing ? 'update' : 'create'} note`);
       } finally {
