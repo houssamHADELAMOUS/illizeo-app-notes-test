@@ -2,9 +2,15 @@
 
 namespace App\Services;
 
+use App\Models\Company;
+use App\Models\User;
 use App\Repositories\NoteRepository;
 use App\Repositories\UserRepository;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Stancl\Tenancy\Database\Models\Domain;
+use Stancl\Tenancy\Database\Models\Tenant;
+use Stancl\Tenancy\UUIDGenerator;
 
 class AuthService
 {
@@ -19,12 +25,48 @@ class AuthService
 
     public function register(array $data): array
     {
-        $user = $this->userRepository->create($data);
+        // Create a new tenant with UUID
+        $uuidGenerator = new UUIDGenerator();
+        $tenant = Tenant::create([
+            'id' => $uuidGenerator->generate(),
+        ]);
+
+        // Create a domain for the tenant
+        $fullDomain = $data['company_subdomain'] . '.localhost';
+        Domain::create([
+            'domain' => $fullDomain,
+            'tenant_id' => $tenant->id,
+        ]);
+
+        // Create company record
+        Company::create([
+            'name' => $data['company_name'],
+            'subdomain' => $data['company_subdomain'],
+            'tenant_id' => $tenant->id,
+        ]);
+
+        // Initialize tenancy for user creation
+        tenancy()->initialize($tenant);
+
+        // Create user with tenant_id
+        $userData = [
+            'tenant_id' => $tenant->id,
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'password' => $data['password'],
+        ];
+        $user = $this->userRepository->create($userData);
+
+        // End tenancy
+        tenancy()->end();
+
         $token = $user->createToken('API Token')->plainTextToken;
 
         return [
             'user' => $user,
             'token' => $token,
+            'tenant_id' => $tenant->id,
+            'subdomain' => $data['company_subdomain'],
         ];
     }
 

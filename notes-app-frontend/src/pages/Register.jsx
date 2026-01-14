@@ -78,6 +78,8 @@ const Register = () => {
       localStorage.setItem('subdomain', values.companySubdomain);
       
       const userData = {
+        company_name: values.companyName,
+        company_subdomain: values.companySubdomain,
         name: values.name,
         email: values.email,
         password: values.password,

@@ -22,6 +22,20 @@ class RegisterRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'company_name' => 'required|string|max:255',
+            'company_subdomain' => [
+                'required',
+                'string',
+                'min:3',
+                'max:63',
+                'regex:/^[a-z0-9][a-z0-9-]*[a-z0-9]$/',
+                function ($attribute, $value, $fail) {
+                    $domain = $value . '.localhost';
+                    if (\Stancl\Tenancy\Database\Models\Domain::where('domain', $domain)->exists()) {
+                        $fail('The ' . $attribute . ' has already been taken.');
+                    }
+                },
+            ],
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|string|min:8|confirmed',
