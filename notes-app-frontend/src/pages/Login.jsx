@@ -1,22 +1,24 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useAuth } from '../context/AuthContext';
 import { Eye, EyeOff, Mail, Lock, Building } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { getCurrentSubdomain } from '../utils/subdomain';
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
+  const currentSubdomain = getCurrentSubdomain();
 
   const formik = useFormik({
     initialValues: {
       email: '',
       password: '',
-      companySubdomain: ''
+      companySubdomain: currentSubdomain || ''
     },
     validationSchema: Yup.object({
       email: Yup.string()

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Toaster } from 'react-hot-toast';
@@ -14,9 +14,20 @@ import { AuthProvider } from './context/AuthContext';
 // Components
 import PrivateRoute from './components/auth/PrivateRoute';
 
+// Utils
+import { getCurrentSubdomain } from './utils/subdomain';
+
 const queryClient = new QueryClient();
 
 function App() {
+  useEffect(() => {
+    // Extract subdomain from URL and store it
+    const subdomain = getCurrentSubdomain();
+    if (subdomain) {
+      localStorage.setItem('subdomain', subdomain);
+    }
+  }, []);
+
   return (
     <QueryClientProvider client={queryClient}>
       <Router>
