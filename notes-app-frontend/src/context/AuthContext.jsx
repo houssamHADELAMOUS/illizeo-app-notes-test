@@ -1,5 +1,6 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useQueryClient } from '@tanstack/react-query';
 import authService from '../services/auth';
 
 const AuthContext = createContext({});
@@ -11,6 +12,7 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [subdomain, setSubdomain] = useState('');
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -61,6 +63,9 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = () => {
+    // clear all cached data
+    queryClient.clear();
+    
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     localStorage.removeItem('subdomain');

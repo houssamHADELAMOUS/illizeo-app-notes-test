@@ -8,16 +8,17 @@ import notesService from '../services/notes';
 import toast from 'react-hot-toast';
 
 const Dashboard = () => {
-  const { user, logout } = useAuth();
+  const { user, logout, subdomain } = useAuth();
   const [showNoteForm, setShowNoteForm] = useState(false);
   const [editingNote, setEditingNote] = useState(null);
   const queryClient = useQueryClient();
 
   const { data: notes, isLoading, error, refetch } = useQuery({
-    queryKey: ['notes'],
+    queryKey: ['notes', user?.id, subdomain],
     queryFn: () => notesService.getAll().then(res => res.data),
     retry: 1,
-    refetchOnWindowFocus: false
+    refetchOnWindowFocus: false,
+    enabled: !!user && !!subdomain
   });
 
   // Mutation for creating a note
@@ -25,20 +26,21 @@ const Dashboard = () => {
     mutationFn: notesService.create,
     onMutate: async (newNoteData) => {
       // Cancel any outgoing refetches
-      await queryClient.cancelQueries({ queryKey: ['notes'] });
+      await queryClient.cancelQueries({ queryKey: ['notes', user?.id, subdomain] });
 
       // Snapshot the previous value
-      const previousNotes = queryClient.getQueryData(['notes']);
+      const previousNotes = queryClient.getQueryData(['notes', user?.id, subdomain]);
 
       // Optimistically update to the new value
       const optimisticNote = {
         ...newNoteData,
         id: Date.now(), // Temporary ID
         user_id: user?.id,
+        tenant_id: subdomain,
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString()
       };
-      queryClient.setQueryData(['notes'], (oldNotes) => [optimisticNote, ...(oldNotes || [])]);
+      queryClient.setQueryData(['notes', user?.id, subdomain], (oldNotes) => [optimisticNote, ...(oldNotes || [])]);
 
       // Return a context object with the snapshotted value
       return { previousNotes };
@@ -46,13 +48,13 @@ const Dashboard = () => {
     onError: (err, newNoteData, context) => {
       // If the mutation fails, use the context returned from onMutate to roll back
       if (context?.previousNotes) {
-        queryClient.setQueryData(['notes'], context.previousNotes);
+        queryClient.setQueryData(['notes', user?.id, subdomain], context.previousNotes);
       }
       toast.error('Failed to create note');
     },
     onSuccess: (response) => {
       // Replace the optimistic note with the real one
-      queryClient.setQueryData(['notes'], (oldNotes) =>
+      queryClient.setQueryData(['notes', user?.id, subdomain], (oldNotes) =>
         oldNotes?.map(note => note.id === response.data.id ? response.data : note) || []
       );
       toast.success('Note created!');
@@ -64,13 +66,13 @@ const Dashboard = () => {
     mutationFn: ({ id, data }) => notesService.update(id, data),
     onMutate: async ({ id, data }) => {
       // Cancel any outgoing refetches
-      await queryClient.cancelQueries({ queryKey: ['notes'] });
+      await queryClient.cancelQueries({ queryKey: ['notes', user?.id, subdomain] });
 
       // Snapshot the previous value
-      const previousNotes = queryClient.getQueryData(['notes']);
+      const previousNotes = queryClient.getQueryData(['notes', user?.id, subdomain]);
 
       // Optimistically update to the new value
-      queryClient.setQueryData(['notes'], (oldNotes) =>
+      queryClient.setQueryData(['notes', user?.id, subdomain], (oldNotes) =>
         oldNotes?.map(note =>
           note.id === id
             ? { ...note, ...data, updated_at: new Date().toISOString() }
@@ -84,13 +86,13 @@ const Dashboard = () => {
     onError: (err, variables, context) => {
       // If the mutation fails, use the context returned from onMutate to roll back
       if (context?.previousNotes) {
-        queryClient.setQueryData(['notes'], context.previousNotes);
+        queryClient.setQueryData(['notes', user?.id, subdomain], context.previousNotes);
       }
       toast.error('Failed to update note');
     },
     onSuccess: (response, { id }) => {
       // Update with the real data from server
-      queryClient.setQueryData(['notes'], (oldNotes) =>
+      queryClient.setQueryData(['notes', user?.id, subdomain], (oldNotes) =>
         oldNotes?.map(note => note.id === id ? response.data : note) || []
       );
       toast.success('Note updated!');
@@ -102,13 +104,13 @@ const Dashboard = () => {
     mutationFn: notesService.delete,
     onMutate: async (deletedId) => {
       // Cancel any outgoing refetches
-      await queryClient.cancelQueries({ queryKey: ['notes'] });
+      await queryClient.cancelQueries({ queryKey: ['notes', user?.id, subdomain] });
 
       // Snapshot the previous value
-      const previousNotes = queryClient.getQueryData(['notes']);
+      const previousNotes = queryClient.getQueryData(['notes', user?.id, subdomain]);
 
       // Optimistically remove the note
-      queryClient.setQueryData(['notes'], (oldNotes) =>
+      queryClient.setQueryData(['notes', user?.id, subdomain], (oldNotes) =>
         oldNotes?.filter(note => note.id !== deletedId) || []
       );
 
@@ -118,7 +120,7 @@ const Dashboard = () => {
     onError: (err, deletedId, context) => {
       // If the mutation fails, use the context returned from onMutate to roll back
       if (context?.previousNotes) {
-        queryClient.setQueryData(['notes'], context.previousNotes);
+        queryClient.setQueryData(['notes', user?.id, subdomain], context.previousNotes);
       }
       toast.error('Failed to delete note');
     },

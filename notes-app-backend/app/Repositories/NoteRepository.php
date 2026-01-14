@@ -21,7 +21,12 @@ class NoteRepository
     public function getAllForUser(): Collection
     {
         $userId = Auth::id();
-        return $this->model->where('user_id', $userId)->latest()->get();
+        $tenantId = tenancy()->tenant->id;
+        $cacheKey = $this->cachePrefix . $tenantId . '_' . $userId;
+
+        return Cache::remember($cacheKey, $this->cacheTtl, function () use ($userId) {
+            return $this->model->where('user_id', $userId)->latest()->get();
+        });
     }
 
     public function findById(int $id): ?Note
@@ -37,6 +42,7 @@ class NoteRepository
     public function create(array $data): Note
     {
         $data['user_id'] = Auth::id();
+        $data['tenant_id'] = tenancy()->tenant->id;
         $note = $this->model->create($data);
 
         // Clear cache for this user
@@ -85,6 +91,15 @@ class NoteRepository
 
     protected function clearUserCache(): void
     {
-        // Cache temporarily disabled
+        $userId = Auth::id();
+        $tenantId = tenancy()->tenant->id;
+        $cacheKey = $this->cachePrefix . $tenantId . '_' . $userId;
+        Cache::forget($cacheKey);
+    }
+
+    public function clearUserCacheById(int $userId, string $tenantId): void
+    {
+        $cacheKey = $this->cachePrefix . $tenantId . '_' . $userId;
+        Cache::forget($cacheKey);
     }
 }

@@ -148,7 +148,7 @@ const Register = () => {
                     id="companyName"
                     name="companyName"
                     type="text"
-                    className={`appearance-none relative block w-full pl-10 pr-3 py-2 border rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-1 sm:text-sm ${
+                    className={`appearance-none  text-black relative block w-full pl-10 pr-3 py-2 border rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-1 sm:text-sm ${
                       formik.touched.companyName && formik.errors.companyName
                         ? 'border-red-300 focus:ring-red-500'
                         : 'border-gray-300 focus:ring-indigo-500'
@@ -179,7 +179,7 @@ const Register = () => {
                       id="companySubdomain"
                       name="companySubdomain"
                       type="text"
-                      className={`appearance-none relative block w-full pl-3 pr-3 py-2 border rounded-r-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-1 sm:text-sm ${
+                      className={`appearance-none text-black relative block w-full pl-3 pr-3 py-2 border rounded-r-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-1 sm:text-sm ${
                         formik.touched.companySubdomain && formik.errors.companySubdomain
                           ? 'border-red-300 focus:ring-red-500'
                           : 'border-gray-300 focus:ring-indigo-500'
@@ -213,7 +213,7 @@ const Register = () => {
                     name="companyWebsite"
                     type="url"
                     placeholder="https://example.com"
-                    className={`appearance-none relative block w-full pl-10 pr-3 py-2 border rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-1 sm:text-sm ${
+                    className={`appearance-none relative text-black block w-full pl-10 pr-3 py-2 border rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-1 sm:text-sm ${
                       formik.touched.companyWebsite && formik.errors.companyWebsite
                         ? 'border-red-300 focus:ring-red-500'
                         : 'border-gray-300 focus:ring-indigo-500'
@@ -249,7 +249,7 @@ const Register = () => {
                     id="name"
                     name="name"
                     type="text"
-                    className={`appearance-none relative block w-full pl-10 pr-3 py-2 border rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-1 sm:text-sm ${
+                    className={`appearance-none relative text-black  block w-full pl-10 pr-3 py-2 border rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-1 sm:text-sm ${
                       formik.touched.name && formik.errors.name
                         ? 'border-red-300 focus:ring-red-500'
                         : 'border-gray-300 focus:ring-indigo-500'
@@ -275,7 +275,7 @@ const Register = () => {
                     id="email"
                     name="email"
                     type="email"
-                    className={`appearance-none relative block w-full pl-10 pr-3 py-2 border rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-1 sm:text-sm ${
+                    className={`appearance-none relative block text-black w-full pl-10 pr-3 py-2 border rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-1 sm:text-sm ${
                       formik.touched.email && formik.errors.email
                         ? 'border-red-300 focus:ring-red-500'
                         : 'border-gray-300 focus:ring-indigo-500'
@@ -302,7 +302,7 @@ const Register = () => {
                     name="phone"
                     type="tel"
                     placeholder="+1 (555) 123-4567"
-                    className={`appearance-none relative block w-full pl-10 pr-3 py-2 border rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-1 sm:text-sm ${
+                    className={`appearance-none relative block text-black w-full pl-10 pr-3 py-2 border rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-1 sm:text-sm ${
                       formik.touched.phone && formik.errors.phone
                         ? 'border-red-300 focus:ring-red-500'
                         : 'border-gray-300 focus:ring-indigo-500'
@@ -328,7 +328,7 @@ const Register = () => {
                     id="password"
                     name="password"
                     type={showPassword ? 'text' : 'password'}
-                    className={`appearance-none relative block w-full pl-10 pr-10 py-2 border rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-1 sm:text-sm ${
+                    className={`appearance-none relative block text-black w-full pl-10 pr-10 py-2 border rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-1 sm:text-sm ${
                       formik.touched.password && formik.errors.password
                         ? 'border-red-300 focus:ring-red-500'
                         : 'border-gray-300 focus:ring-indigo-500'
@@ -385,7 +385,7 @@ const Register = () => {
                     id="confirmPassword"
                     name="confirmPassword"
                     type={showConfirmPassword ? 'text' : 'password'}
-                    className={`appearance-none relative block w-full pl-10 pr-10 py-2 border rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-1 sm:text-sm ${
+                    className={`appearance-none relative text-black block w-full pl-10 pr-10 py-2 border rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-1 sm:text-sm ${
                       formik.touched.confirmPassword && formik.errors.confirmPassword
                         ? 'border-red-300 focus:ring-red-500'
                         : 'border-gray-300 focus:ring-indigo-500'
@@ -418,7 +418,7 @@ const Register = () => {
               name="terms"
               type="checkbox"
               required
-              className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+              className="h-4 w-4 text-indigo-600  text-black focus:ring-indigo-500 border-gray-300 rounded"
             />
             <label htmlFor="terms" className="ml-2 block text-sm text-gray-900">
               I agree to the{' '}

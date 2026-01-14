@@ -74,7 +74,7 @@ const Login = () => {
                   name="companySubdomain"
                   type="text"
                   placeholder="your-company"
-                  className={`appearance-none relative block w-full pl-10 pr-3 py-2 border rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-1 sm:text-sm ${
+                  className={`appearance-none text-black relative block w-full pl-10 pr-3 py-2 border rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-1 sm:text-sm ${
                     formik.touched.companySubdomain && formik.errors.companySubdomain
                       ? 'border-red-300 focus:ring-red-500'
                       : 'border-gray-300 focus:ring-indigo-500'
@@ -101,7 +101,7 @@ const Login = () => {
                   name="email"
                   type="email"
                   autoComplete="email"
-                  className={`appearance-none relative block w-full pl-10 pr-3 py-2 border rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-1 sm:text-sm ${
+                  className={`appearance-none text-black relative block w-full pl-10 pr-3 py-2 border rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-1 sm:text-sm ${
                     formik.touched.email && formik.errors.email
                       ? 'border-red-300 focus:ring-red-500'
                       : 'border-gray-300 focus:ring-indigo-500'
@@ -128,7 +128,7 @@ const Login = () => {
                   name="password"
                   type={showPassword ? 'text' : 'password'}
                   autoComplete="current-password"
-                  className={`appearance-none relative block w-full pl-10 pr-10 py-2 border rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-1 sm:text-sm ${
+                  className={`appearance-none text-black relative block w-full pl-10 pr-10 py-2 border rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-1 sm:text-sm ${
                     formik.touched.password && formik.errors.password
                       ? 'border-red-300 focus:ring-red-500'
                       : 'border-gray-300 focus:ring-indigo-500'

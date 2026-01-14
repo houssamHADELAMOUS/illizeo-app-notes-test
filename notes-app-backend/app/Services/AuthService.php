@@ -2,18 +2,19 @@
 
 namespace App\Services;
 
-use App\Models\User;
+use App\Repositories\NoteRepository;
 use App\Repositories\UserRepository;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class AuthService
 {
     protected $userRepository;
+    protected $noteRepository;
 
-    public function __construct(UserRepository $userRepository)
+    public function __construct(UserRepository $userRepository, NoteRepository $noteRepository)
     {
         $this->userRepository = $userRepository;
+        $this->noteRepository = $noteRepository;
     }
 
     public function register(array $data): array
@@ -45,6 +46,11 @@ class AuthService
 
     public function logout(): void
     {
+        $user = Auth::user();
+        if ($user) {
+            // Clear user's cache on logout
+            $this->noteRepository->clearUserCacheById($user->id, $user->tenant_id);
+        }
         Auth::user()->currentAccessToken()->delete();
     }
 }

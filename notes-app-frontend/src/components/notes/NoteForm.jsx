@@ -59,7 +59,7 @@ const NoteForm = ({ note, onClose, onSuccess }) => {
             id="title"
             name="title"
             type="text"
-            className={`w-full px-3 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-1 sm:text-sm ${
+            className={`w-full px-3 text-black py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-1 sm:text-sm ${
               formik.touched.title && formik.errors.title
                 ? 'border-red-300 focus:ring-red-500'
                 : 'border-gray-300 focus:ring-indigo-500'
@@ -79,7 +79,7 @@ const NoteForm = ({ note, onClose, onSuccess }) => {
           <select
             id="category"
             name="category"
-            className={`w-full px-3 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-1 sm:text-sm ${
+            className={`w-full px-3 py-2 text-black border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-1 sm:text-sm ${
               formik.touched.category && formik.errors.category
                 ? 'border-red-300 focus:ring-red-500'
                 : 'border-gray-300 focus:ring-indigo-500'
@@ -104,7 +104,7 @@ const NoteForm = ({ note, onClose, onSuccess }) => {
             id="content"
             name="content"
             rows="6"
-            className={`w-full px-3 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-1 sm:text-sm ${
+            className={`w-full px-3 py-2 text-black border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-1 sm:text-sm ${
               formik.touched.content && formik.errors.content
                 ? 'border-red-300 focus:ring-red-500'
                 : 'border-gray-300 focus:ring-indigo-500'
