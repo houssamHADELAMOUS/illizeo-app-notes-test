@@ -10,6 +10,11 @@ class Announcement extends Model
 {
     use HasFactory;
 
+    /**
+     * The database connection that should be used by the model.
+     */
+    protected $connection = 'tenant';
+
     protected $fillable = [
         'title',
         'content',

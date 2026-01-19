@@ -64,9 +64,9 @@ class AnnouncementController extends Controller
     /**
      * Display the specified announcement.
      */
-    public function show(Announcement $announcement): JsonResponse
+    public function show(string $tenant_id, string $id): JsonResponse
     {
-        $announcementDTO = $this->announcementService->getAnnouncementById($announcement->id);
+        $announcementDTO = $this->announcementService->getAnnouncementById((int) $id);
 
         return response()->json([
             'announcement' => $announcementDTO->toArray(),
@@ -76,8 +76,9 @@ class AnnouncementController extends Controller
     /**
      * Update the specified announcement.
      */
-    public function update(Request $request, Announcement $announcement): JsonResponse
+    public function update(Request $request, string $tenant_id, string $id): JsonResponse
     {
+        $announcement = Announcement::findOrFail((int) $id);
         $this->authorize('update', $announcement);
 
         $validated = $request->validate([
@@ -87,7 +88,7 @@ class AnnouncementController extends Controller
         ]);
 
         $dto = UpdateAnnouncementDTO::fromRequest($validated);
-        $updatedAnnouncement = $this->updateAnnouncementAction->execute($announcement->id, $dto);
+        $updatedAnnouncement = $this->updateAnnouncementAction->execute((int) $id, $dto);
 
         return response()->json([
             'message' => 'Announcement updated successfully',
@@ -98,11 +99,12 @@ class AnnouncementController extends Controller
     /**
      * Remove the specified announcement.
      */
-    public function destroy(Announcement $announcement): JsonResponse
+    public function destroy(string $tenant_id, string $id): JsonResponse
     {
+        $announcement = Announcement::findOrFail((int) $id);
         $this->authorize('delete', $announcement);
 
-        $this->deleteAnnouncementAction->execute($announcement->id);
+        $this->deleteAnnouncementAction->execute((int) $id);
 
         return response()->json([
             'message' => 'Announcement deleted successfully',

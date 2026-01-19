@@ -2,6 +2,7 @@
 
 namespace App\Domain\Shared\Services;
 
+use Illuminate\Cache\TaggableStore;
 use Illuminate\Support\Facades\Cache;
 
 class CacheService
@@ -17,6 +18,14 @@ class CacheService
     public const TAG_ANNOUNCEMENTS = 'announcements';
     public const TAG_ROLES = 'roles';
     public const TAG_PERMISSIONS = 'permissions';
+
+    /**
+     * Check if the current cache store supports tagging
+     */
+    public static function supportsTagging(): bool
+    {
+        return Cache::getStore() instanceof TaggableStore;
+    }
 
     /**
      * Get cache tags that should be invalidated together for a given entity
@@ -43,13 +52,23 @@ class CacheService
 
     /**
      * Invalidate cache for a specific entity type
+     * Falls back to clearing all cache if tags not supported
      */
     public static function invalidate(string $entity): void
     {
         $tags = self::getInvalidationGroup($entity);
 
-        foreach ($tags as $tag) {
-            Cache::tags([$tag])->flush();
+        if (empty($tags)) {
+            return;
+        }
+
+        if (self::supportsTagging()) {
+            foreach ($tags as $tag) {
+                Cache::tags([$tag])->flush();
+            }
+        } else {
+            // Fallback: clear cache without tags (less precise but works)
+            Cache::flush();
         }
     }
 
@@ -58,12 +77,16 @@ class CacheService
      */
     public static function invalidateAll(): void
     {
-        Cache::tags([
-            self::TAG_USERS,
-            self::TAG_ANNOUNCEMENTS,
-            self::TAG_ROLES,
-            self::TAG_PERMISSIONS,
-        ])->flush();
+        if (self::supportsTagging()) {
+            Cache::tags([
+                self::TAG_USERS,
+                self::TAG_ANNOUNCEMENTS,
+                self::TAG_ROLES,
+                self::TAG_PERMISSIONS,
+            ])->flush();
+        } else {
+            Cache::flush();
+        }
     }
 
     /**
@@ -81,18 +104,27 @@ class CacheService
 
     /**
      * Remember with tags helper
+     * Falls back to regular remember if tags not supported
      */
     public static function remember(array $tags, string $key, int $ttl, callable $callback)
     {
-        return Cache::tags($tags)->remember($key, $ttl, $callback);
+        if (self::supportsTagging()) {
+            return Cache::tags($tags)->remember($key, $ttl, $callback);
+        }
+        return Cache::remember($key, $ttl, $callback);
     }
 
     /**
      * Forget cache by tags
+     * Falls back to flush if tags not supported
      */
     public static function forgetByTags(array $tags): void
     {
-        Cache::tags($tags)->flush();
+        if (self::supportsTagging()) {
+            Cache::tags($tags)->flush();
+        } else {
+            Cache::flush();
+        }
     }
 
     /**
