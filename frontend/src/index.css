@@ -1,0 +1,355 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light dark;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  --radius: 0.625rem;
+
+  /* ========================================
+     ILLIZEO COLOR SYSTEM - LIGHT THEME
+     ======================================== */
+
+  /* Base Colors */
+  --background: #FFFFFF;
+  --foreground: #0B0A3A;
+  --card: #FFFFFF;
+  --card-foreground: #0B0A3A;
+  --popover: #FFFFFF;
+  --popover-foreground: #0B0A3A;
+
+  /* Primary - Purple/Indigo (Brand Color) */
+  --primary: #5F5BFF;
+  --primary-foreground: #FFFFFF;
+
+  /* Secondary - Light Purple */
+  --secondary: #EBEBFF;
+  --secondary-foreground: #211E9D;
+
+  /* Muted - Subtle backgrounds */
+  --muted: #D7D6FF;
+  --muted-foreground: #2C28CE;
+
+  /* Accent - Orange (Call to Action) */
+  --accent: #F49241;
+  --accent-foreground: #FFFFFF;
+
+  /* Destructive - Warm Red/Orange */
+  --destructive: #C15F0E;
+  --destructive-foreground: #FFFFFF;
+
+  /* Warning - Yellow/Gold */
+  --warning: #F7E947;
+  --warning-foreground: #312D05;
+
+  /* Success - Green tint with our palette */
+  --success: #8784FF;
+  --success-foreground: #FFFFFF;
+
+  /* Borders & Inputs */
+  --border: #C3C2FF;
+  --input: #D7D6FF;
+  --ring: #5F5BFF;
+
+  /* ========================================
+     PURPLE/INDIGO SCALE (Primary Brand)
+     ======================================== */
+  --purple-50: #EBEBFF;
+  --purple-100: #D7D6FF;
+  --purple-200: #C3C2FF;
+  --purple-300: #AFADFF;
+  --purple-400: #8784FF;
+  --purple-500: #5F5BFF;
+  --purple-600: #3732FF;
+  --purple-700: #2C28CE;
+  --purple-800: #211E9D;
+  --purple-900: #16146B;
+  --purple-950: #0B0A3A;
+
+  /* ========================================
+     ORANGE SCALE (Accent/CTA)
+     ======================================== */
+  --orange-50: #FEF1E7;
+  --orange-100: #FCE4CF;
+  --orange-200: #FBD6B8;
+  --orange-300: #F9C9A0;
+  --orange-400: #F7AD70;
+  --orange-500: #F49241;
+  --orange-600: #F17711;
+  --orange-700: #C15F0E;
+  --orange-800: #91470A;
+  --orange-900: #603007;
+  --orange-950: #301803;
+
+  /* ========================================
+     YELLOW/GOLD SCALE (Highlights/Warnings)
+     ======================================== */
+  --yellow-50: #FEFCE8;
+  --yellow-100: #FDF9D1;
+  --yellow-200: #FCF7BA;
+  --yellow-300: #FBF4A3;
+  --yellow-400: #F9EE75;
+  --yellow-500: #F7E947;
+  --yellow-600: #F5E319;
+  --yellow-700: #C4B614;
+  --yellow-800: #93880F;
+  --yellow-900: #625B0A;
+  --yellow-950: #312D05;
+
+  /* ========================================
+     CHART COLORS (Using our palette)
+     ======================================== */
+  --chart-1: #5F5BFF;
+  --chart-2: #F49241;
+  --chart-3: #F7E947;
+  --chart-4: #8784FF;
+  --chart-5: #F17711;
+
+  /* ========================================
+     SIDEBAR (Using Purple theme)
+     ======================================== */
+  --sidebar: #EBEBFF;
+  --sidebar-foreground: #0B0A3A;
+  --sidebar-primary: #5F5BFF;
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent: #D7D6FF;
+  --sidebar-accent-foreground: #211E9D;
+  --sidebar-border: #C3C2FF;
+  --sidebar-ring: #5F5BFF;
+}
+
+
+@theme inline {
+  /* Radius Scale */
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+  --radius-4xl: calc(var(--radius) + 16px);
+
+  /* Base Semantic Colors */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  /* Chart Colors */
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+
+  /* Sidebar Colors */
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  /* Purple/Indigo Scale - Use: bg-purple-500, text-purple-700, etc. */
+  --color-purple-50: var(--purple-50);
+  --color-purple-100: var(--purple-100);
+  --color-purple-200: var(--purple-200);
+  --color-purple-300: var(--purple-300);
+  --color-purple-400: var(--purple-400);
+  --color-purple-500: var(--purple-500);
+  --color-purple-600: var(--purple-600);
+  --color-purple-700: var(--purple-700);
+  --color-purple-800: var(--purple-800);
+  --color-purple-900: var(--purple-900);
+  --color-purple-950: var(--purple-950);
+
+  /* Orange Scale - Use: bg-orange-500, text-orange-700, etc. */
+  --color-orange-50: var(--orange-50);
+  --color-orange-100: var(--orange-100);
+  --color-orange-200: var(--orange-200);
+  --color-orange-300: var(--orange-300);
+  --color-orange-400: var(--orange-400);
+  --color-orange-500: var(--orange-500);
+  --color-orange-600: var(--orange-600);
+  --color-orange-700: var(--orange-700);
+  --color-orange-800: var(--orange-800);
+  --color-orange-900: var(--orange-900);
+  --color-orange-950: var(--orange-950);
+
+  /* Yellow/Gold Scale - Use: bg-yellow-500, text-yellow-700, etc. */
+  --color-yellow-50: var(--yellow-50);
+  --color-yellow-100: var(--yellow-100);
+  --color-yellow-200: var(--yellow-200);
+  --color-yellow-300: var(--yellow-300);
+  --color-yellow-400: var(--yellow-400);
+  --color-yellow-500: var(--yellow-500);
+  --color-yellow-600: var(--yellow-600);
+  --color-yellow-700: var(--yellow-700);
+  --color-yellow-800: var(--yellow-800);
+  --color-yellow-900: var(--yellow-900);
+  --color-yellow-950: var(--yellow-950);
+}
+
+.dark {
+  /* ========================================
+     ILLIZEO COLOR SYSTEM - DARK THEME
+     ======================================== */
+
+  /* Base Colors - Deep purple-black tones */
+  --background: #0B0A3A;
+  --foreground: #EBEBFF;
+  --card: #16146B;
+  --card-foreground: #EBEBFF;
+  --popover: #16146B;
+  --popover-foreground: #EBEBFF;
+
+  /* Primary - Brighter purple for dark mode */
+  --primary: #8784FF;
+  --primary-foreground: #0B0A3A;
+
+  /* Secondary */
+  --secondary: #211E9D;
+  --secondary-foreground: #EBEBFF;
+
+  /* Muted */
+  --muted: #16146B;
+  --muted-foreground: #C3C2FF;
+
+  /* Accent - Orange stays vibrant */
+  --accent: #F7AD70;
+  --accent-foreground: #301803;
+
+  /* Destructive */
+  --destructive: #F17711;
+  --destructive-foreground: #FFFFFF;
+
+  /* Warning */
+  --warning: #F9EE75;
+  --warning-foreground: #312D05;
+
+  /* Success */
+  --success: #AFADFF;
+  --success-foreground: #0B0A3A;
+
+  /* Borders & Inputs */
+  --border: #2C28CE;
+  --input: #211E9D;
+  --ring: #8784FF;
+
+  /* Chart Colors for dark mode */
+  --chart-1: #8784FF;
+  --chart-2: #F7AD70;
+  --chart-3: #F9EE75;
+  --chart-4: #AFADFF;
+  --chart-5: #FBD6B8;
+
+  /* Sidebar */
+  --sidebar: #16146B;
+  --sidebar-foreground: #EBEBFF;
+  --sidebar-primary: #8784FF;
+  --sidebar-primary-foreground: #0B0A3A;
+  --sidebar-accent: #211E9D;
+  --sidebar-accent-foreground: #EBEBFF;
+  --sidebar-border: #2C28CE;
+  --sidebar-ring: #8784FF;
+}
+
+
+
+
+/* Add to your global.css or tailwind.css */
+@keyframes slideInFromRight {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInFromLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideOutToRight {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+}
+
+@keyframes slideOutToLeft {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+}
+
+.step-enter-right {
+  animation: slideInFromRight 0.3s ease-out forwards;
+}
+
+.step-enter-left {
+  animation: slideInFromLeft 0.3s ease-out forwards;
+}
+
+.step-exit-right {
+  animation: slideOutToRight 0.3s ease-in forwards;
+}
+
+.step-exit-left {
+  animation: slideOutToLeft 0.3s ease-in forwards;
+}
+
+.step-content {
+  opacity: 1;
+  transform: translateX(0);
+}
