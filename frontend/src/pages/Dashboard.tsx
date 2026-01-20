@@ -9,7 +9,7 @@ import { formatDistanceToNow } from 'date-fns'
 import { Megaphone, RefreshCw, Clock } from 'lucide-react'
 import { useState } from 'react'
 
-// Generate consistent color for each user based on their ID
+// avatar color by user id
 function getAvatarColor(userId: number): string {
   const colors = [
     'bg-purple-500 text-white',
@@ -106,7 +106,7 @@ export default function Dashboard() {
   const announcements = data?.data || []
   const meta = data?.meta
 
-  // Sort by created_at descending (latest first)
+  // sort latest first
   const sortedAnnouncements = [...announcements].sort(
     (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
   )

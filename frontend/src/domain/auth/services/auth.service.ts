@@ -1,4 +1,5 @@
 import apiClient, { getCsrfCookie } from '@/shared/api/client'
+import { AUTH_ENDPOINTS } from '@/shared/api/endpoints'
 import type { LoginCredentials, RegisterData, AuthResponse, User } from '@/domain/auth/types'
 
 export interface LoginResponse {
@@ -9,7 +10,7 @@ export interface LoginResponse {
 export const authService = {
   async login(credentials: LoginCredentials): Promise<LoginResponse> {
     await getCsrfCookie()
-    const response = await apiClient.post<LoginResponse>('/api/auth/login', credentials)
+    const response = await apiClient.post<LoginResponse>(AUTH_ENDPOINTS.LOGIN, credentials)
     
     if (response.data.token) {
       localStorage.setItem('auth_token', response.data.token)
@@ -21,13 +22,13 @@ export const authService = {
 
   async register(data: RegisterData): Promise<AuthResponse> {
     await getCsrfCookie()
-    const response = await apiClient.post<AuthResponse>('/api/auth/register', data)
+    const response = await apiClient.post<AuthResponse>(AUTH_ENDPOINTS.REGISTER, data)
     return response.data
   },
 
   async logout(): Promise<void> {
     try {
-      await apiClient.post('/api/auth/logout')
+      await apiClient.post(AUTH_ENDPOINTS.LOGOUT)
     } finally {
       localStorage.removeItem('auth_token')
       delete apiClient.defaults.headers.common['Authorization']
@@ -35,7 +36,7 @@ export const authService = {
   },
 
   async getUser(): Promise<User> {
-    const response = await apiClient.get<{ user: User } | User>('/api/auth/me')
+    const response = await apiClient.get<{ user: User } | User>(AUTH_ENDPOINTS.ME)
     return 'user' in response.data ? response.data.user : response.data
   },
 

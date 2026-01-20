@@ -7,23 +7,7 @@ use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
 use Stancl\Tenancy\Middleware\InitializeTenancyByPath;
 use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
 
-/*
-|--------------------------------------------------------------------------
-| Tenant Routes
-|--------------------------------------------------------------------------
-|
-| Here you can register the tenant routes for your application.
-| These routes are loaded by the TenantRouteServiceProvider.
-|
-| All routes here run in tenant context (tenant database is active).
-|
-| You can access these routes in two ways:
-| 1. Domain-based: http://acme.localhost:8000/api/auth/login
-| 2. Path-based: http://127.0.0.1:8000/{tenant-id}/api/auth/login
-|
-*/
-
-// Web routes for tenant (domain-based)
+// web routes (domain-based)
 Route::middleware([
     'web',
     InitializeTenancyByDomain::class,
@@ -34,7 +18,7 @@ Route::middleware([
     });
 });
 
-// API routes for tenant (domain-based)
+// api routes (domain-based)
 Route::middleware([
     'api',
     InitializeTenancyByDomain::class,

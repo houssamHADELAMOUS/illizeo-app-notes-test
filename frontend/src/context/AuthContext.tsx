@@ -1,7 +1,10 @@
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react'
+import { createContext, useContext, useState, useEffect, type ReactNode } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import { useNavigate } from 'react-router-dom'
 import apiClient from '@/shared/api/client'
+import { AUTH_ENDPOINTS } from '@/shared/api/endpoints'
+import { QUERY_KEYS } from '@/shared/api/queryKeys'
+import { ROUTES } from '@/shared/constants'
 import type { User } from '@/domain/auth/types'
 
 interface AuthContextType {
@@ -35,7 +38,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const refreshUser = async () => {
     try {
       setIsLoading(true)
-      const response = await apiClient.get<{ user: User } | User>('/api/auth/me')
+      const response = await apiClient.get<{ user: User } | User>(AUTH_ENDPOINTS.ME)
       const userData = 'user' in response.data ? response.data.user : response.data
       setUser(userData)
     } catch {
@@ -47,7 +50,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   const login = async (email: string, password: string) => {
     try {
-      const response = await apiClient.post<{ token: string; user: User }>('/api/auth/login', {
+      const response = await apiClient.post<{ token: string; user: User }>(AUTH_ENDPOINTS.LOGIN, {
         email,
         password,
       })
@@ -60,9 +63,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
       }
 
       setUser(userData)
-      queryClient.setQueryData(['user'], userData)
+      queryClient.setQueryData(QUERY_KEYS.USER, userData)
 
-      navigate('/dashboard')
+      navigate(ROUTES.DASHBOARD)
     } catch (error) {
       throw error
     }
@@ -70,18 +73,18 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   const logout = async () => {
     try {
-      await apiClient.post('/api/auth/logout')
+      await apiClient.post(AUTH_ENDPOINTS.LOGOUT)
     } catch {
     } finally {
       localStorage.removeItem('auth_token')
       delete apiClient.defaults.headers.common['Authorization']
       setUser(null)
       queryClient.clear()
-      navigate('/login')
+      navigate(ROUTES.LOGIN)
     }
   }
 
-  // Restore token from localStorage on mount
+  // restore token
   useEffect(() => {
     const token = localStorage.getItem('auth_token')
     if (token) {

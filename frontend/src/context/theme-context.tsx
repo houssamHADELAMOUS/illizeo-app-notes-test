@@ -45,19 +45,13 @@ export function ThemeProvider({ children, defaultTheme = "system" }: ThemeProvid
 
   useEffect(() => {
     const root = window.document.documentElement
-
-    // Remove existing theme class
     root.classList.remove("light", "dark")
-
-    // Determine the resolved theme
     const resolved = theme === "system" ? getSystemTheme() : theme
     setResolvedTheme(resolved)
-
-    // Apply the theme class
     root.classList.add(resolved)
   }, [theme])
 
-  // Listen for system theme changes
+  // system theme listener
   useEffect(() => {
     if (theme !== "system") return
 

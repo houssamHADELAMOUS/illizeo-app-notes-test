@@ -34,7 +34,6 @@ export function NavMain({
   const location = useLocation()
 
   const isActiveRoute = (url: string) => {
-    // Exact match for dashboard root, startsWith for other routes
     if (url === "/dashboard") {
       return location.pathname === "/dashboard"
     }

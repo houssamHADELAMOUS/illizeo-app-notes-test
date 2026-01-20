@@ -7,10 +7,11 @@ import AdminUserAnnouncements from '@/pages/AdminUserAnnouncements'
 import UsersPage from '@/pages/Users'
 import DashboardLayout from '@/layouts/DashboardLayout'
 import { ProtectedRoute, AdminRoute, GuestRoute } from '@/shared/components/ProtectedRoute'
+import { ROUTES } from '@/shared/constants'
 
 export const router = createBrowserRouter([
   {
-    path: '/login',
+    path: ROUTES.LOGIN,
     element: (
       <GuestRoute>
         <Login />
@@ -18,7 +19,7 @@ export const router = createBrowserRouter([
     ),
   },
   {
-    path: '/register',
+    path: ROUTES.REGISTER,
     element: (
       <GuestRoute>
         <TenantRegistrationForm />
@@ -26,11 +27,11 @@ export const router = createBrowserRouter([
     ),
   },
   {
-    path: '/',
-    element: <Navigate to="/dashboard" replace />,
+    path: ROUTES.HOME,
+    element: <Navigate to={ROUTES.DASHBOARD} replace />,
   },
   {
-    path: '/dashboard',
+    path: ROUTES.DASHBOARD,
     element: (
       <ProtectedRoute>
         <DashboardLayout />
@@ -43,7 +44,7 @@ export const router = createBrowserRouter([
       },
       {
         path: 'announcements',
-        element: <Navigate to="/dashboard" replace />,
+        element: <Navigate to={ROUTES.DASHBOARD} replace />,
       },
       {
         path: 'my-announcements',
@@ -70,6 +71,6 @@ export const router = createBrowserRouter([
   {
     // Catch-all redirect to dashboard
     path: '*',
-    element: <Navigate to="/dashboard" replace />,
+    element: <Navigate to={ROUTES.DASHBOARD} replace />,
   },
 ])

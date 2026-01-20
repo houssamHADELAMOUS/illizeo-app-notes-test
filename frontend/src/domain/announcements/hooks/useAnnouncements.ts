@@ -1,12 +1,13 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { announcementsService } from '@/domain/announcements/services/announcements.service'
+import { QUERY_KEYS, invalidateKeys } from '@/shared/api/queryKeys'
 import type { AnnouncementsResponse, Announcement, CreateAnnouncementData } from '@/domain/announcements/types'
 import type { User, UsersResponse } from '@/domain/users/types'
 
 // fetch published announcements
 export const usePublishedAnnouncements = (page: number = 1) => {
   return useQuery<AnnouncementsResponse, Error>({
-    queryKey: ['announcements', 'published', page],
+    queryKey: QUERY_KEYS.ANNOUNCEMENTS.published(page),
     queryFn: () => announcementsService.getPublishedAnnouncements(page),
   })
 }
@@ -14,7 +15,7 @@ export const usePublishedAnnouncements = (page: number = 1) => {
 // fetch my announcements
 export const useMyAnnouncements = (page: number = 1) => {
   return useQuery<AnnouncementsResponse, Error>({
-    queryKey: ['announcements', 'my', page],
+    queryKey: QUERY_KEYS.ANNOUNCEMENTS.my(page),
     queryFn: () => announcementsService.getMyAnnouncements(page),
   })
 }
@@ -22,7 +23,7 @@ export const useMyAnnouncements = (page: number = 1) => {
 // fetch user announcements (admin)
 export const useUserAnnouncements = (page: number = 1) => {
   return useQuery<AnnouncementsResponse, Error>({
-    queryKey: ['announcements', 'users', page],
+    queryKey: QUERY_KEYS.ANNOUNCEMENTS.users(page),
     queryFn: () => announcementsService.getUserAnnouncements(page),
   })
 }
@@ -30,7 +31,7 @@ export const useUserAnnouncements = (page: number = 1) => {
 // fetch single announcement
 export const useAnnouncement = (id: number) => {
   return useQuery<Announcement, Error>({
-    queryKey: ['announcements', id],
+    queryKey: QUERY_KEYS.ANNOUNCEMENTS.detail(id),
     queryFn: () => announcementsService.getAnnouncement(id),
   })
 }
@@ -46,11 +47,11 @@ export const useCreateAnnouncement = (currentUserId?: number) => {
         return {}
       }
 
-      await queryClient.cancelQueries({ queryKey: ['users'] })
-      const previousUsers = queryClient.getQueryData<UsersResponse>(['users'])
+      await queryClient.cancelQueries({ queryKey: invalidateKeys.users() })
+      const previousUsers = queryClient.getQueryData<UsersResponse>(invalidateKeys.users())
 
       if (previousUsers) {
-        queryClient.setQueryData<UsersResponse>(['users'], {
+        queryClient.setQueryData<UsersResponse>(invalidateKeys.users(), {
           ...previousUsers,
           users: previousUsers.users.map((user: User) =>
             user.id === currentUserId
@@ -64,14 +65,14 @@ export const useCreateAnnouncement = (currentUserId?: number) => {
     },
     onError: (_err, _variables, context) => {
       if (context?.previousUsers) {
-        queryClient.setQueryData(['users'], context.previousUsers)
+        queryClient.setQueryData(invalidateKeys.users(), context.previousUsers)
       }
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['announcements'] })
+      queryClient.invalidateQueries({ queryKey: invalidateKeys.announcements() })
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ['users'] })
+      queryClient.invalidateQueries({ queryKey: invalidateKeys.users() })
     },
   })
 }
@@ -84,10 +85,10 @@ export const useUpdateAnnouncement = () => {
     mutationFn: ({ id, data }: { id: number; data: any }) =>
       announcementsService.updateAnnouncement(id, data),
     onMutate: async ({ id, data }) => {
-      await queryClient.cancelQueries({ queryKey: ['announcements'] })
-      const previousData = queryClient.getQueryData(['announcements', 'my', 1])
+      await queryClient.cancelQueries({ queryKey: invalidateKeys.announcements() })
+      const previousData = queryClient.getQueryData(QUERY_KEYS.ANNOUNCEMENTS.my(1))
 
-      queryClient.setQueryData(['announcements', 'my', 1], (old: any) => {
+      queryClient.setQueryData(QUERY_KEYS.ANNOUNCEMENTS.my(1), (old: any) => {
         if (!old?.data) return old
         
         let updatedData = old.data.map((item: any) => {
@@ -117,12 +118,12 @@ export const useUpdateAnnouncement = () => {
     },
     onError: (_err, _variables, context) => {
       if (context?.previousData) {
-        queryClient.setQueryData(['announcements', 'my', 1], context.previousData)
+        queryClient.setQueryData(QUERY_KEYS.ANNOUNCEMENTS.my(1), context.previousData)
       }
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ['announcements'] })
-      queryClient.invalidateQueries({ queryKey: ['users'] })
+      queryClient.invalidateQueries({ queryKey: invalidateKeys.announcements() })
+      queryClient.invalidateQueries({ queryKey: invalidateKeys.users() })
     },
   })
 }
@@ -134,8 +135,8 @@ export const useDeleteAnnouncement = () => {
   return useMutation({
     mutationFn: announcementsService.deleteAnnouncement,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['announcements'] })
-      queryClient.invalidateQueries({ queryKey: ['users'] })
+      queryClient.invalidateQueries({ queryKey: invalidateKeys.announcements() })
+      queryClient.invalidateQueries({ queryKey: invalidateKeys.users() })
     },
   })
 }

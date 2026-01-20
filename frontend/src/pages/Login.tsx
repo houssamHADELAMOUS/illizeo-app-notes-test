@@ -12,24 +12,18 @@ import { Input } from '@/components/ui/input'
 import { ThemeToggle } from '@/components/ui/theme-toggle'
 import { Spinner } from '@/components/ui/spinner'
 import { useFormik } from 'formik'
-import * as Yup from 'yup'
+import { loginSchema, type LoginFormValues } from '@/shared/validations'
+import { ROUTES } from '@/shared/constants'
 
 export default function Login() {
   const login = useLogin()
 
-  const formik = useFormik({
+  const formik = useFormik<LoginFormValues>({
     initialValues: {
       email: '',
       password: '',
     },
-    validationSchema: Yup.object({
-      email: Yup.string()
-        .email('Invalid email address')
-        .required('Email is required'),
-      password: Yup.string()
-        .min(6, 'Password must be at least 6 characters')
-        .required('Password is required'),
-    }),
+    validationSchema: loginSchema,
     onSubmit: (values) => {
       login.mutate(values)
     },
@@ -123,7 +117,7 @@ export default function Login() {
 
                <FieldDescription className="text-center">
   Already have a workspace?{' '}
-  <a href="/register" className="text-primary hover:underline font-medium">
+  <a href={ROUTES.REGISTER} className="text-primary hover:underline font-medium">
     Sign in here
   </a>
 </FieldDescription>

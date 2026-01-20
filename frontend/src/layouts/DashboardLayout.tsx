@@ -17,7 +17,7 @@ import {
 import { ThemeToggle } from "@/components/ui/theme-toggle"
 import { useLocation } from "react-router-dom"
 
-// Map routes to breadcrumb labels
+// breadcrumb labels
 const routeLabels: Record<string, string> = {
   "/dashboard": "All Announcements",
   "/dashboard/announcements": "Announcements",
@@ -25,10 +25,6 @@ const routeLabels: Record<string, string> = {
   "/dashboard/user-announcements": "User Announcements",
 }
 
-/**
- * Unified dashboard layout for both Admin and Regular Users
- * Uses role-based sidebar navigation to conditionally show menu items
- */
 export default function DashboardLayout() {
   const location = useLocation()
   const currentLabel = routeLabels[location.pathname] || "All Announcements"

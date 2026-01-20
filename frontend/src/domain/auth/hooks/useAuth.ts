@@ -1,6 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useNavigate } from 'react-router-dom'
 import { authService } from '@/domain/auth/services/auth.service'
+import { QUERY_KEYS } from '@/shared/api/queryKeys'
+import { ROUTES } from '@/shared/constants'
 import type { LoginCredentials, RegisterData } from '@/domain/auth/types'
 
 // init auth
@@ -8,7 +10,7 @@ authService.initializeAuth()
 
 export const useUser = () => {
   return useQuery({
-    queryKey: ['user'],
+    queryKey: QUERY_KEYS.USER,
     queryFn: authService.getUser,
     retry: false,
     staleTime: 1000 * 60 * 5,
@@ -23,8 +25,8 @@ export const useLogin = () => {
   return useMutation({
     mutationFn: (credentials: LoginCredentials) => authService.login(credentials),
     onSuccess: (data) => {
-      queryClient.setQueryData(['user'], data.user)
-      navigate('/dashboard')
+      queryClient.setQueryData(QUERY_KEYS.USER, data.user)
+      navigate(ROUTES.DASHBOARD)
     },
   })
 }
@@ -36,8 +38,8 @@ export const useRegister = () => {
   return useMutation({
     mutationFn: (data: RegisterData) => authService.register(data),
     onSuccess: (data) => {
-      queryClient.setQueryData(['user'], data.user)
-      navigate('/dashboard')
+      queryClient.setQueryData(QUERY_KEYS.USER, data.user)
+      navigate(ROUTES.DASHBOARD)
     },
   })
 }
@@ -50,7 +52,7 @@ export const useLogout = () => {
     mutationFn: authService.logout,
     onSuccess: () => {
       queryClient.clear()
-      navigate('/login')
+      navigate(ROUTES.LOGIN)
     },
   })
 }

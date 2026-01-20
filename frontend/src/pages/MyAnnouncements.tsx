@@ -37,7 +37,7 @@ import type { DragEndEvent, DragStartEvent } from "@dnd-kit/core"
 import { useDraggable, useDroppable } from "@dnd-kit/core"
 import type { Announcement } from "@/domain/announcements/types"
 
-// Draggable Announcement Card
+// draggable card
 function AnnouncementCard({ 
   announcement, 
   onEdit, 
@@ -207,13 +207,13 @@ export default function MyAnnouncementsPage() {
   const createAnnouncement = useCreateAnnouncement(user?.id)
   const [activeId, setActiveId] = useState<string | null>(null)
   
-  // Edit modal state
+  // edit modal
   const [editingAnnouncement, setEditingAnnouncement] = useState<Announcement | null>(null)
   const [editTitle, setEditTitle] = useState("")
   const [editContent, setEditContent] = useState("")
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
 
-  // Create modal state
+  // create modal
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
   const [newTitle, setNewTitle] = useState("")
   const [newContent, setNewContent] = useState("")
@@ -227,7 +227,7 @@ export default function MyAnnouncementsPage() {
     })
   )
 
-  // Separate announcements by status
+  // filter by status
   const { draftAnnouncements, publishedAnnouncements } = useMemo(() => {
     const announcements = data?.data || []
     return {
@@ -254,11 +254,9 @@ export default function MyAnnouncementsPage() {
     const announcementId = parseInt(active.id.toString())
     const newStatus = over.id.toString()
 
-    // Get the current announcement
     const announcement = data?.data?.find((a) => a.id === announcementId)
     if (!announcement) return
 
-    // Only update if status changed
     if (announcement.status !== newStatus && (newStatus === "draft" || newStatus === "published")) {
       updateAnnouncement.mutate({
         id: announcementId,
@@ -320,7 +318,7 @@ export default function MyAnnouncementsPage() {
     }
   }
 
-  // Create announcement handlers
+
   const handleCreate = () => {
     setIsCreateModalOpen(true)
   }

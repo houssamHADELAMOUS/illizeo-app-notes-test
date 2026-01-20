@@ -31,12 +31,12 @@ return [
 
     'connections' => [
 
-        // This is your CENTRAL database connection (named 'mysql')
+        // central db
         'mysql' => [
             'driver' => 'mysql',
             'host' => env('DB_HOST', '127.0.0.1'),
             'port' => env('DB_PORT', '3306'),
-            'database' => env('DB_DATABASE', 'illizeo_maindb'), // Central database
+            'database' => env('DB_DATABASE', 'illizeo_maindb'),
             'username' => env('DB_USERNAME', 'root'),
             'password' => env('DB_PASSWORD', ''),
             'unix_socket' => env('DB_SOCKET', ''),
@@ -51,14 +51,14 @@ return [
             ]) : [],
         ],
 
-        // This is your TENANT connection (will be set dynamically)
+        // tenant db (dynamic)
         'tenant' => [
             'driver' => 'mysql',
-            'host' => env('DB_HOST', '127.0.0.1'), // Use same host as central
-            'port' => env('DB_PORT', '3306'),      // Use same port as central
-            'database' => null, // CRITICAL: Must be null for tenancy to work
-            'username' => env('DB_USERNAME', 'root'), // Same credentials
-            'password' => env('DB_PASSWORD', ''),     // Same credentials
+            'host' => env('DB_HOST', '127.0.0.1'),
+            'port' => env('DB_PORT', '3306'),
+            'database' => null,
+            'username' => env('DB_USERNAME', 'root'),
+            'password' => env('DB_PASSWORD', ''),
             'unix_socket' => env('DB_SOCKET', ''),
             'charset' => env('DB_CHARSET', 'utf8mb4'),
             'collation' => env('DB_COLLATION', 'utf8mb4_0900_ai_ci'),
@@ -70,9 +70,6 @@ return [
                 PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
             ]) : [],
         ],
-
-        // REMOVE the duplicate 'central' and empty 'mysql' connections below
-        // Keep only one 'mysql' connection (for central) and one 'tenant' connection
 
         'sqlite' => [
             'driver' => 'sqlite',
